@@ -1,110 +1,35 @@
 # react-tetris
 
-![Build Status](https://github.com/brandly/react-tetris/workflows/.github/workflows/test.yml/badge.svg)
+## Usage
 
-> Embed a game of Tetris in your React app
-
-```shell
-$ npm install --save react-tetris
-```
-
-[view demo](https://brandly.github.io/react-tetris/)
-
-## usage
-
-```js
-const React = require('react');
-const Tetris = require('react-tetris');
-
-const App = () => (
-  <div>
-    <h1>Tetris</h1>
-    <Tetris
-      keyboardControls={{
-        // Default values shown here. These will be used if no
-        // `keyboardControls` prop is provided.
-        down: 'MOVE_DOWN',
-        left: 'MOVE_LEFT',
-        right: 'MOVE_RIGHT',
-        space: 'HARD_DROP',
-        z: 'FLIP_COUNTERCLOCKWISE',
-        x: 'FLIP_CLOCKWISE',
-        up: 'FLIP_CLOCKWISE',
-        p: 'TOGGLE_PAUSE',
-        c: 'HOLD',
-        shift: 'HOLD'
-      }}
-    >
-      {({
-        HeldPiece,
-        Gameboard,
-        PieceQueue,
-        points,
-        linesCleared,
-        state,
-        controller
-      }) => (
-        <div>
-          <HeldPiece />
-          <div>
-            <p>Points: {points}</p>
-            <p>Lines Cleared: {linesCleared}</p>
-          </div>
-          <Gameboard />
-          <PieceQueue />
-          {state === 'LOST' && (
-            <div>
-              <h2>Game Over</h2>
-              <button onClick={controller.restart}>New game</button>
-            </div>
-          )}
-        </div>
-      )}
-    </Tetris>
-  </div>
-);
-```
-
-include some styles
-
-```css
-.game-block {
-  margin: 0;
-  padding: 0;
-  width: 1.5em;
-  height: 1.5em;
-  border: 1px solid #ddd;
-}
-.piece-i {
-  background-color: #ec858b;
-}
-.piece-j {
-  background-color: #f1b598;
-}
-.piece-l {
-  background-color: #f8efae;
-}
-.piece-o {
-  background-color: #b5a677;
-}
-.piece-s {
-  background-color: #816e56;
-}
-.piece-t {
-  background-color: #b77c72;
-}
-.piece-z {
-  background-color: #e3be58;
-}
-.piece-preview {
-  background-color: #eee;
-}
-```
-
-## dev
+Step 1. Install dependencies
 
 ```shell
-$ npm run build
-$ npm run watch
-$ npm test
+npm install
 ```
+
+Step 2. Run the app on a local http server
+
+```shell
+npm run serve
+```
+
+Step 3. Watch for changes for real-time development
+
+```shell
+npm run watch
+```
+
+note: Most browsers will cache the exposed main.js file. If you make live changes to the code, you may need to clear your browser cache to see the changes. A simple way to do this is to open the developer tools and check the "Disable cache" checkbox in the "Network" tab.
+
+## Task
+
+Your goal is to change the rules of the game so that instead of clearing lines, you clear connected components of size at least 10.
+
+A connected component is a set of same colored blocks that are connected to each other by their 4 edges.
+
+For example, the following board has 5 connected components 2 of which are of size at least 10 and should have been cleared if the new rules were in place.
+
+![Screenshot](example.png)
+
+Good luck!
