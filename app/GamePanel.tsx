@@ -90,7 +90,7 @@ const GamePanel = (): JSX.Element => (
               </LeftHalf>
               <RightHalf>
                 <p>
-                  lines
+                  boxes
                   <br />
                   <Digits>{linesCleared}</Digits>
                 </p>

@@ -30,7 +30,8 @@ export type Game = {
   lines: number;
 };
 
-export const getLevel = (game: Game): number => Math.floor(game.lines / 10) + 1;
+// game.lines now increases per-box-broken, so this number increases a lot faster now
+export const getLevel = (game: Game): number => Math.floor(game.lines / 500) + 1;
 
 export type Action =
   | 'PAUSE'
@@ -122,7 +123,7 @@ export const update = (game: Game, action: Action): Game => {
 };
 
 const lockInPiece = (game: Game): Game => {
-  const [matrix, linesCleared] = setPiece(game.matrix, game.piece);
+  const [matrix, boxesCleared] = setPiece(game.matrix, game.piece);
   const next = PieceQueue.getNext(game.queue);
   const piece = initializePiece(next.piece);
   return {
@@ -134,8 +135,8 @@ const lockInPiece = (game: Game): Game => {
       ? { ...game.heldPiece, available: true }
       : undefined,
     queue: next.queue,
-    lines: game.lines + linesCleared,
-    points: game.points + addScore(linesCleared)
+    lines: game.lines + boxesCleared, // lazily not renaming field..
+    points: game.points + addScore(boxesCleared)
   };
 };
 

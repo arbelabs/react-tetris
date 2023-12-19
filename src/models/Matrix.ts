@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
+import * as _ from "lodash";
 import Constants from '../constants';
 import { Piece, Rotation, getBlocks, isRotation } from './Piece';
 
@@ -78,31 +79,66 @@ export function setPiece(
   positionedPiece: PositionedPiece
 ): [Matrix, number] {
   const _matrix = addPieceToBoard(matrix, positionedPiece);
-  // TODO: purify
-  const linesCleared = clearFullLines(_matrix);
+  const linesCleared = clearIslands(_matrix);
   return [_matrix, linesCleared];
 }
 
-function clearFullLines(matrix: Matrix): number {
-  let linesCleared = 0;
-  for (let y = 0; y < matrix.length; y++) {
-    // it's a full line
-    if (every(matrix[y]!)) {
-      // so rip it out
-      matrix.splice(y, 1);
-      matrix.unshift(buildGameRow());
-      linesCleared += 1;
+function clearIsland(matrix: Matrix, i: number, j: number, island_char: string): number {
+
+  let height = matrix.length
+  let width = matrix[0]!.length
+  let numIslands = 0
+
+  if (i >= 1 && matrix[i - 1]![j]! == island_char) {
+    matrix[i - 1]![j] = null
+    numIslands += 1
+    numIslands += clearIsland(matrix, i - 1, j, island_char)
+  }
+
+  if (j >= 1 && matrix[i]![j - 1]! == island_char) {
+    matrix[i]![j - 1] = null
+    numIslands += 1
+    numIslands += clearIsland(matrix, i, j - 1, island_char)
+  }
+
+  if (i < height - 1 && matrix[i + 1]![j]! == island_char) {
+    matrix[i + 1]![j] = null
+    numIslands += 1
+    numIslands += clearIsland(matrix, i + 1, j, island_char)
+  }
+
+  if (j < width - 1 && matrix[i]![j + 1]! == island_char) {
+    matrix[i]![j + 1] = null
+    numIslands += 1
+    numIslands += clearIsland(matrix, i, j + 1, island_char)
+  }
+
+  return numIslands
+}
+
+function clearIslands(matrix: Matrix): number {
+
+  // console.log("MATRIX:", _matrix);
+
+  let islandsCleared = 0;
+  let _matrix = _.cloneDeep(matrix)
+
+  for (let i = 0; i < _matrix.length; i++) {
+    for (let j = 0; j < _matrix[0]!.length; j++) {
+
+      if (_matrix[i]![j]! != null) {
+        // Operate on deep copy so we don't clobber state
+        let islandCount = clearIsland(_matrix, i, j, _matrix[i]![j]!)
+        if (islandCount >= 10) {
+          islandsCleared += islandCount
+          // Operate on real copy, manipulate state this time
+          clearIsland(matrix, i, j, matrix[i]![j]!)
+        }
+      }
     }
   }
 
-  return linesCleared;
-}
-
-function every<T>(list: T[]): boolean {
-  for (let i = 0; i < list.length; i++) {
-    if (!list[i]) return false;
-  }
-  return true;
+  return islandsCleared;
 }
 
 export function isEmptyPosition(
